@@ -139,6 +139,11 @@
             Titular = new Cliente();
             TotalDeContasCriadas += 1;
         }
+        private ContaCorrente()
+        {
+
+        }
+
 
 
         public static int TotalDeContasCriadas { get; set; }

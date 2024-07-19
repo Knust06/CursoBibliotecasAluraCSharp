@@ -1,6 +1,7 @@
 ﻿using bytebank.Modelos.Conta;
 using bytebank_ATENDIMENTO.bytebank.Exceptions;
 using Newtonsoft.Json;
+using System.Xml.Serialization;
 
 namespace bytebank_ATENDIMENTO.bytebank.Atendimento
 {
@@ -31,7 +32,8 @@ namespace bytebank_ATENDIMENTO.bytebank.Atendimento
                     Console.WriteLine("===4 - Ordenar Contas       ===");
                     Console.WriteLine("===5 - Pesquisar Conta      ===");
                     Console.WriteLine("===6 - Exportar Contas      ===");
-                    Console.WriteLine("===7 - Sair do Sistema      ===");
+                    Console.WriteLine("===7 - Exportar Em XML      ===");
+                    Console.WriteLine("===8 - Sair do Sistema      ===");
                     Console.WriteLine("===============================");
                     Console.WriteLine("\n\n");
                     Console.Write("Digite a opção desejada: ");
@@ -65,6 +67,9 @@ namespace bytebank_ATENDIMENTO.bytebank.Atendimento
                             ExportarContas();
                             break;
                         case '7':
+                            ExportarContasEmXML();
+                            break;
+                        case '8':
                             EncerrarAplicacao();
                             break;
                         default:
@@ -98,13 +103,12 @@ namespace bytebank_ATENDIMENTO.bytebank.Atendimento
                     Formatting.Indented);
                 try
                 {
-                    FileStream fs = new FileStream(@"c:\tmp\export\contas.json", 
-                        FileMode.Create);
+                    FileStream fs = new FileStream(@"C:\Users\Gibir\Downloads\contas.json", FileMode.Create);
                     using (StreamWriter streamwriter = new StreamWriter(fs))
                     {
                         streamwriter.WriteLine(json);
                     }
-                    Console.WriteLine(@"Arquivo salvo em c:\tmp\export\");
+                    Console.WriteLine(@"Arquivo salvo em C:\Users\Gibir\Downloads");
                     Console.ReadKey();
                 }
                 catch (Exception excecao)
@@ -112,6 +116,44 @@ namespace bytebank_ATENDIMENTO.bytebank.Atendimento
                     throw new ByteBankException(excecao.Message);
                     Console.ReadKey();
                 }
+            }
+        }
+
+        private void ExportarContasEmXML()
+        {
+
+            Console.Clear();
+            Console.WriteLine("===============================");
+            Console.WriteLine("===     EXPORTAR CONTAS XML ===");
+            Console.WriteLine("===============================");
+            Console.WriteLine("\n");
+
+            if (_listaDeContas.Count <= 0)
+            {
+                Console.WriteLine("... Não existe dados para exportação...");
+                Console.ReadKey();
+            }
+            else
+            {
+                //Serializar para XML
+                var contasXML = new XmlSerializer(typeof(List<ContaCorrente>));
+
+                try
+                {
+                    FileStream fs = new FileStream(@"C:\Users\Gibir\Downloads\contas.xml", FileMode.Create);
+                    using (StreamWriter streamwriter = new StreamWriter(fs))
+                    {
+                        contasXML.Serialize(streamwriter, _listaDeContas);
+                    }
+                    Console.WriteLine(@"Arquivo salvo em C:\Users\Gibir\Downloads");
+                    Console.ReadKey();
+                }
+                catch (Exception excecao)
+                {
+                    throw new ByteBankException(excecao.Message);
+                    Console.ReadKey();
+                }
+
             }
         }
 
